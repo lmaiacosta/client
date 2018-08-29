@@ -9,9 +9,10 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/keybase/client/go/kbname"
+	"github.com/keybase/go-codec/codec"
 	"github.com/stretchr/testify/require"
 
-	libkb "github.com/keybase/client/go/libkb"
 	keybase1 "github.com/keybase/client/go/protocol/keybase1"
 )
 
@@ -35,11 +36,11 @@ func TestParseImplicitTeamTLFName(t *testing.T) {
 		"/keybase/public/foobar__underscore",
 	}
 	for _, badName := range badNames {
-		_, err := libkb.ParseImplicitTeamTLFName(MakeAssertionContext(), badName)
+		_, err := kbname.ParseImplicitTeamTLFName(MakeAssertionContext(), badName)
 		require.Error(t, err)
 	}
 	goodName := "/keybase/public/dave,twitter:alice,bob@facebook,carol@keybase,echo"
-	name, err := libkb.ParseImplicitTeamTLFName(MakeAssertionContext(), goodName)
+	name, err := kbname.ParseImplicitTeamTLFName(MakeAssertionContext(), goodName)
 	require.NoError(t, err)
 	require.Equal(t, name.IsPublic, true)
 	require.Equal(t, len(name.Writers.KeybaseUsers), 3)
@@ -57,7 +58,7 @@ func TestParseImplicitTeamTLFName(t *testing.T) {
 	require.True(t, secondSocial == aliceExpected || secondSocial == bobExpected)
 
 	goodName = "/keybase/public/dave,bob@facebook#alice (conflicted copy 2017-03-04)"
-	name, err = libkb.ParseImplicitTeamTLFName(MakeAssertionContext(), goodName)
+	name, err = kbname.ParseImplicitTeamTLFName(MakeAssertionContext(), goodName)
 	require.NoError(t, err)
 	require.Equal(t, name.IsPublic, true)
 	require.Equal(t, len(name.Writers.KeybaseUsers), 1)
@@ -66,13 +67,19 @@ func TestParseImplicitTeamTLFName(t *testing.T) {
 	require.Equal(t, name.ConflictInfo.Generation, keybase1.ConflictGeneration(1), "right conflict info")
 
 	goodName = "/keybase/public/dave,bob@facebook#alice (conflicted copy 2017-03-04 #2)"
-	name, err = libkb.ParseImplicitTeamTLFName(MakeAssertionContext(), goodName)
+	name, err = kbname.ParseImplicitTeamTLFName(MakeAssertionContext(), goodName)
 	require.NoError(t, err)
 	require.Equal(t, name.IsPublic, true)
 	require.Equal(t, len(name.Writers.KeybaseUsers), 1)
 	require.Equal(t, len(name.Writers.UnresolvedUsers), 1)
 	require.True(t, containsString(name.Writers.KeybaseUsers, "dave"))
 	require.Equal(t, name.ConflictInfo.Generation, keybase1.ConflictGeneration(2), "right conflict info")
+}
+
+func msgpackEncode(src interface{}) (dst []byte, err error) {
+	var mh codec.MsgpackHandle
+	err = codec.NewEncoderBytes(&dst, &mh).Encode(src)
+	return dst, err
 }
 
 func TestPartImplicitTeamTLFNameEvenMore(t *testing.T) {
@@ -147,15 +154,15 @@ func TestPartImplicitTeamTLFNameEvenMore(t *testing.T) {
 	}
 
 	deepEq := func(a, b keybase1.ImplicitTeamDisplayName) bool {
-		x, _ := libkb.MsgpackEncode(a)
-		y, _ := libkb.MsgpackEncode(b)
+		x, _ := msgpackEncode(a)
+		y, _ := msgpackEncode(b)
 		fmt.Printf("%s\n", hex.EncodeToString(x))
 		fmt.Printf("%s\n", hex.EncodeToString(y))
 		return bytes.Equal(x, y)
 	}
 
 	for _, test := range tests {
-		itn, err := libkb.ParseImplicitTeamTLFName(MakeAssertionContext(), test.input)
+		itn, err := kbname.ParseImplicitTeamTLFName(MakeAssertionContext(), test.input)
 		if test.output == nil {
 			require.Error(t, err)
 		} else {
@@ -168,11 +175,11 @@ func TestPartImplicitTeamTLFNameEvenMore(t *testing.T) {
 // quick sanity test -- mostly redundant with TLFName test above
 func TestParseImplicitTeamDisplayName(t *testing.T) {
 	goodName := "twitter:alice,bob@facebook,carol@keybase,dave"
-	_, err := libkb.ParseImplicitTeamDisplayName(MakeAssertionContext(), "", false)
+	_, err := kbname.ParseImplicitTeamDisplayName(MakeAssertionContext(), "", false)
 	require.Error(t, err)
-	namePrivate, err := libkb.ParseImplicitTeamDisplayName(MakeAssertionContext(), goodName, false)
+	namePrivate, err := kbname.ParseImplicitTeamDisplayName(MakeAssertionContext(), goodName, false)
 	require.NoError(t, err)
-	namePublic, err := libkb.ParseImplicitTeamDisplayName(MakeAssertionContext(), goodName, true)
+	namePublic, err := kbname.ParseImplicitTeamDisplayName(MakeAssertionContext(), goodName, true)
 	require.NoError(t, err)
 	require.False(t, namePrivate.IsPublic)
 	require.True(t, namePublic.IsPublic)

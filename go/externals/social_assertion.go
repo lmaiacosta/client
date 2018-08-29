@@ -1,34 +1,35 @@
 package externals
 
 import (
-	libkb "github.com/keybase/client/go/libkb"
+	"github.com/keybase/client/go/kbname"
+	"github.com/keybase/client/go/libkb"
 	keybase1 "github.com/keybase/client/go/protocol/keybase1"
 )
 
-func MakeAssertionContext() libkb.AssertionContext {
+func MakeAssertionContext() kbname.AssertionContext {
 	return libkb.MakeAssertionContext(GetServices())
 }
 
 func NormalizeSocialAssertion(s string) (keybase1.SocialAssertion, bool) {
-	return libkb.NormalizeSocialAssertion(MakeAssertionContext(), s)
+	return kbname.NormalizeSocialAssertion(MakeAssertionContext(), s)
 }
 
 func IsSocialAssertion(s string) bool {
-	return libkb.IsSocialAssertion(MakeAssertionContext(), s)
+	return kbname.IsSocialAssertion(MakeAssertionContext(), s)
 }
 
-func AssertionParseAndOnly(s string) (libkb.AssertionExpression, error) {
-	return libkb.AssertionParseAndOnly(MakeAssertionContext(), s)
+func AssertionParseAndOnly(s string) (kbname.AssertionExpression, error) {
+	return kbname.AssertionParseAndOnly(MakeAssertionContext(), s)
 }
 
-func AssertionParse(s string) (libkb.AssertionExpression, error) {
-	return libkb.AssertionParse(MakeAssertionContext(), s)
+func AssertionParse(s string) (kbname.AssertionExpression, error) {
+	return kbname.AssertionParse(MakeAssertionContext(), s)
 }
 
-func ParseAssertionsWithReaders(s string) (writers, readers []libkb.AssertionExpression, err error) {
-	return libkb.ParseAssertionsWithReaders(MakeAssertionContext(), s)
+func ParseAssertionsWithReaders(s string) (writers, readers []kbname.AssertionExpression, err error) {
+	return kbname.ParseAssertionsWithReaders(MakeAssertionContext(), s)
 }
 
-func ParseAssertionList(s string) ([]libkb.AssertionExpression, error) {
-	return libkb.ParseAssertionList(MakeAssertionContext(), s)
+func ParseAssertionList(s string) ([]kbname.AssertionExpression, error) {
+	return kbname.ParseAssertionList(MakeAssertionContext(), s)
 }

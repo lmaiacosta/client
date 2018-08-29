@@ -6,10 +6,11 @@ package externals
 import (
 	"testing"
 
+	"github.com/keybase/client/go/kbname"
 	"github.com/keybase/client/go/libkb"
 )
 
-func testAssertionContext() libkb.AssertionContext {
+func testAssertionContext() kbname.AssertionContext {
 	return libkb.MakeAssertionContext(GetServices())
 }
 
