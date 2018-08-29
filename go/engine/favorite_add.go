@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/keybase/client/go/kbname"
 	"github.com/keybase/client/go/libkb"
 	keybase1 "github.com/keybase/client/go/protocol/keybase1"
 )
@@ -101,7 +102,7 @@ func (e *FavoriteAdd) checkInviteNeeded(m libkb.MetaContext) error {
 	}
 
 	for _, user := range strings.Split(e.arg.Folder.Name, ",") {
-		assertion, ok := libkb.NormalizeSocialAssertion(m.G().MakeAssertionContext(), user)
+		assertion, ok := kbname.NormalizeSocialAssertion(m.G().MakeAssertionContext(), user)
 		if !ok {
 			m.CDebugf("not a social assertion: %s", user)
 			continue
