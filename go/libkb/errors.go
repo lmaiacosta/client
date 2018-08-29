@@ -2272,18 +2272,6 @@ func (e RevokeLastDevicePGPError) Error() string {
 
 //=============================================================================
 
-type ImplicitTeamDisplayNameError struct {
-	msg string
-}
-
-func (e ImplicitTeamDisplayNameError) Error() string {
-	return fmt.Sprintf("Error parsing implicit team name: %s", e.msg)
-}
-
-func NewImplicitTeamDisplayNameError(format string, args ...interface{}) ImplicitTeamDisplayNameError {
-	return ImplicitTeamDisplayNameError{fmt.Sprintf(format, args...)}
-}
-
 type TeamVisibilityError struct {
 	wantedPublic bool
 	gotPublic    bool
