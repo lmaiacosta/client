@@ -4,13 +4,9 @@
 package externals
 
 import (
-	"bytes"
-	"encoding/hex"
-	"fmt"
 	"testing"
 
 	"github.com/keybase/client/go/kbname"
-	"github.com/keybase/go-codec/codec"
 	"github.com/stretchr/testify/require"
 
 	keybase1 "github.com/keybase/client/go/protocol/keybase1"
@@ -74,12 +70,6 @@ func TestParseImplicitTeamTLFName(t *testing.T) {
 	require.Equal(t, len(name.Writers.UnresolvedUsers), 1)
 	require.True(t, containsString(name.Writers.KeybaseUsers, "dave"))
 	require.Equal(t, name.ConflictInfo.Generation, keybase1.ConflictGeneration(2), "right conflict info")
-}
-
-func msgpackEncode(src interface{}) (dst []byte, err error) {
-	var mh codec.MsgpackHandle
-	err = codec.NewEncoderBytes(&dst, &mh).Encode(src)
-	return dst, err
 }
 
 func TestPartImplicitTeamTLFNameEvenMore(t *testing.T) {
@@ -153,20 +143,12 @@ func TestPartImplicitTeamTLFNameEvenMore(t *testing.T) {
 		{"/keybase/private/#alice", nil},
 	}
 
-	deepEq := func(a, b keybase1.ImplicitTeamDisplayName) bool {
-		x, _ := msgpackEncode(a)
-		y, _ := msgpackEncode(b)
-		fmt.Printf("%s\n", hex.EncodeToString(x))
-		fmt.Printf("%s\n", hex.EncodeToString(y))
-		return bytes.Equal(x, y)
-	}
-
 	for _, test := range tests {
 		itn, err := kbname.ParseImplicitTeamTLFName(MakeAssertionContext(), test.input)
 		if test.output == nil {
 			require.Error(t, err)
 		} else {
-			require.True(t, deepEq(itn, *test.output))
+			require.Equal(t, *test.output, itn)
 		}
 	}
 }
