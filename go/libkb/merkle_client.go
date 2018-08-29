@@ -14,6 +14,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/keybase/client/go/kbun"
 	chat1 "github.com/keybase/client/go/protocol/chat1"
 	keybase1 "github.com/keybase/client/go/protocol/keybase1"
 	jsonw "github.com/keybase/go-jsonw"
@@ -1336,7 +1337,7 @@ func (vp *VerificationPath) verifyUsername(m MetaContext, userInfo merkleUserInf
 		return
 	}
 	if userInfo.uid.NotEqual(uid2) {
-		err = UIDMismatchError{fmt.Sprintf("UID %s != %s via merkle tree", uid2, userInfo.uid)}
+		err = kbun.UIDMismatchError{fmt.Sprintf("UID %s != %s via merkle tree", uid2, userInfo.uid)}
 		return
 	}
 

@@ -5,7 +5,9 @@ package engine
 
 import (
 	"errors"
+
 	gregor "github.com/keybase/client/go/gregor"
+	"github.com/keybase/client/go/kbun"
 	"github.com/keybase/client/go/libkb"
 	keybase1 "github.com/keybase/client/go/protocol/keybase1"
 )
@@ -113,7 +115,7 @@ func (e *ResolveThenIdentify2) nameResolutionPostAssertion(m libkb.MetaContext) 
 		return err
 	}
 	if !libkb.NewNormalizedUsername(res.Upk.GetName()).Eq(e.queriedName) {
-		return libkb.NewUIDMismatchError("bad user returned for " + e.queriedName.String())
+		return kbun.NewUIDMismatchError("bad user returned for " + e.queriedName.String())
 	}
 	return nil
 }

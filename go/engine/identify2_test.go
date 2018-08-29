@@ -7,6 +7,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/keybase/client/go/kbun"
 	libkb "github.com/keybase/client/go/libkb"
 	keybase1 "github.com/keybase/client/go/protocol/keybase1"
 	jsonw "github.com/keybase/go-jsonw"
@@ -398,7 +399,7 @@ func TestIdentify2WithUIDWithUntrackedFastPath(t *testing.T) {
 
 		eng := NewIdentify2WithUID(tc.G, &keybase1.Identify2Arg{Uid: aliceUID, IdentifyBehavior: keybase1.TLFIdentifyBehavior_CHAT_GUI})
 		eng.testArgs = &Identify2WithUIDTestArgs{
-			cache: tester,
+			cache:                  tester,
 			allowUntrackedFastPath: true,
 		}
 		err := eng.Run(identify2MetaContext(tc, tester))
@@ -456,9 +457,9 @@ func TestIdentify2WithUIDWithBrokenTrackFromChatGUI(t *testing.T) {
 		eng := NewIdentify2WithUID(tc.G, &keybase1.Identify2Arg{Uid: tracyUID, IdentifyBehavior: keybase1.TLFIdentifyBehavior_CHAT_GUI})
 
 		eng.testArgs = &Identify2WithUIDTestArgs{
-			noMe:  true,
-			cache: tester,
-			tcl:   importTrackingLink(t, tc.G),
+			noMe:                   true,
+			cache:                  tester,
+			tcl:                    importTrackingLink(t, tc.G),
 			allowUntrackedFastPath: true,
 		}
 
@@ -1112,7 +1113,7 @@ func TestResolveAndCheck(t *testing.T) {
 		{"foobunny@github", libkb.ResolutionError{}, nil},
 		{"foobunny", libkb.NotFoundError{}, nil},
 		{"foobunny+foobunny@github", libkb.NotFoundError{}, nil},
-		{"t_alice", libkb.UIDMismatchError{}, &evilResolver},
+		{"t_alice", kbun.UIDMismatchError{}, &evilResolver},
 		{"t_alice+t_tracy@rooter", libkb.UnmetAssertionError{}, &evilResolver},
 		{"t_alice+" + string(aliceUID) + "@uid", libkb.UnmetAssertionError{}, &evilResolver},
 	}
