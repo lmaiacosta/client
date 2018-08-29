@@ -24,7 +24,7 @@ func IsSocialAssertion(ctx kbname.AssertionContext, s string) bool {
 // transformed to the user@twitter format.  Only registered
 // services are allowed.
 func NormalizeSocialAssertion(ctx kbname.AssertionContext, s string) (keybase1.SocialAssertion, bool) {
-	url, err := ParseAssertionURL(ctx, s, true)
+	url, err := kbname.ParseAssertionURL(ctx, s, true)
 	if err != nil || !url.IsRemote() {
 		return keybase1.SocialAssertion{}, false
 	}
