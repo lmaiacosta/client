@@ -1774,12 +1774,6 @@ func IsExecError(err error) bool {
 
 //=============================================================================
 
-type BadSignaturePrefixError struct{}
-
-func (e BadSignaturePrefixError) Error() string { return "bad signature prefix" }
-
-//=============================================================================
-
 type UserDeletedError struct {
 	Msg string
 }
