@@ -1402,6 +1402,10 @@ func (c ChainLink) AllowStubbing() bool {
 // IsHighUserLink determines whether a chainlink counts as "high" in a user's chain,
 // which is defined as an Eldest link, a link with seqno=1, a link that is Sibkey,
 // PGPUpdate, Revoke, or any link that is revoking.
+// xxx NOTE: backfill has some cases this doesn't
+//   - hardcoded resets
+//   - hopefully c.HasRevocations() is equivalent to the link type filter here
+//   - subchain starts, as in web_service_bindings that introduce a new eldest kid
 func (c ChainLink) IsHighUserLink() (bool, error) {
 	v2Type, err := c.GetSigchainV2Type()
 	if err != nil {
